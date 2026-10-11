@@ -21,7 +21,18 @@ def get_current_user(request: Request) -> dict[str, Any]:
         user = _get_user_from_response(get_auth_supabase().auth.get_user(access_token))
     except AuthApiError as exc:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="انتهت الجلسة، يرجى تسجيل الدخول مرة أخرى.") from exc
-    return {"id": str(user.id), "email": user.email}
+    app_metadata = getattr(user, "app_metadata", None) or {}
+    return {
+        "id": str(user.id),
+        "email": user.email,
+        "role": app_metadata.get("role", "user"),
+    }
+
+
+def get_admin_user(user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    if user.get("role") != "admin":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="هذه الصفحة مخصصة للمدير فقط.")
+    return user
 
 
 CurrentUser = Depends(get_current_user)

@@ -13,7 +13,7 @@ from pydantic import BaseModel, Field
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 from supabase import AuthApiError
 
-from app.auth import get_current_user
+from app.auth import get_admin_user, get_current_user
 from app.cloudinary_service import upload_media
 from app.config import get_settings
 from app.database import get_auth_supabase, get_supabase
@@ -81,6 +81,11 @@ async def login_page(request: Request):
 @app.get("/dashboard", response_class=HTMLResponse)
 async def dashboard(request: Request, user: dict[str, Any] = Depends(get_current_user)):
     return templates.TemplateResponse(request, "dashboard.html", {"app_name": settings.app_name, "user": user})
+
+
+@app.get("/admin", response_class=HTMLResponse)
+async def admin_dashboard(request: Request, user: dict[str, Any] = Depends(get_admin_user)):
+    return templates.TemplateResponse(request, "admin.html", {"app_name": settings.app_name, "user": user})
 
 
 @app.post("/auth/signup")

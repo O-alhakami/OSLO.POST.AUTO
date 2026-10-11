@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ app_name }} · إدارة المنصة</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body class="dashboard-page">
+  <div class="orb orb-one"></div>
+  <div class="orb orb-two"></div>
+
+  <header class="topbar panel">
+    <div class="topbar-inner app-shell">
+      <a class="brand" href="/admin">
+        <span class="brand-badge">OS</span>
+        <span>{{ app_name }}</span>
+      </a>
+      <div class="user-meta">
+        <span>{{ user.email }}</span>
+        <button id="logout" class="button-ghost">تسجيل الخروج</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-shell dashboard-shell">
+    <section class="panel composer-panel">
+      <p class="eyebrow">صلاحيات المدير</p>
+      <h1>مرحبًا بك في إدارة المنصة</h1>
+      <p>تم التحقق من صلاحية المدير عبر بيانات الحساب الموثقة في Supabase.</p>
+      <a class="button-primary" href="/dashboard">الانتقال إلى لوحة المنشورات</a>
+    </section>
+  </main>
+
+  <script src="/static/app.js" defer></script>
+</body>
+</html>

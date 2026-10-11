@@ -5,6 +5,7 @@ A FastAPI/Jinja2 dashboard starter for social-account connections, Cloudinary me
 ## Important behavior
 
 - Signup and login use Supabase Auth. The application uses the Supabase service-role client for its existing `social_accounts` and `posts` tables; never expose that key in browser code.
+- `/admin` requires the authenticated Supabase user's trusted `app_metadata.role` to equal `admin`. Create the account through the normal signup flow, then grant the role from a trusted environment that has the service-role key: `python -m app.set_admin --user-id <SUPABASE_AUTH_USER_UUID>`. Never grant this role through user-editable metadata or put a fixed admin password in source code. The login identifier remains the account's email address.
 - OAuth authorization-code flows are implemented for Instagram, Facebook, TikTok, X, and LinkedIn. Register each callback URL as `PUBLIC_BASE_URL/oauth/{platform}/callback`. OAuth provider products/scopes and account eligibility must be configured in each provider's developer console. Facebook Page selection and Instagram Business account discovery may need additional provider-specific API calls.
 - Provider APIs for publishing are deliberately **mocked**. The worker records a successful simulated result and does not publish content to any social network. Implement the platform publishing API inside `app/tasks.py` before relying on this application to publish.
 - A daily Celery Beat job removes published post rows and their Cloudinary assets once they are older than 15 days.
