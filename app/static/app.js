@@ -1,15 +1,62 @@
 const platformNames = ["instagram", "tiktok", "facebook", "x", "linkedin"];
+const platformLabels = {
+  instagram: "إنستغرام",
+  tiktok: "تيك توك",
+  facebook: "فيسبوك",
+  x: "X",
+  linkedin: "لينكدإن",
+};
+
 let uploadedMedia = [];
+
+const statusLabels = {
+  queued: "قيد الانتظار",
+  scheduled: "مجدول",
+  published: "تم النشر",
+  failed: "فشل",
+};
+
+function translateErrorMessage(message) {
+  const source = String(message || "");
+  const map = {
+    "Invalid email or password.": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+    "Account created.": "تم إنشاء الحساب بنجاح.",
+    "Check your email to confirm your account.": "تحقق من بريدك الإلكتروني لتأكيد الحساب.",
+    "Signed in.": "تم تسجيل الدخول بنجاح.",
+    "Invalid path specified in request URL": "عنوان الطلب غير صالح.",
+    "Only supported image and video formats can be uploaded.": "يُسمح فقط بتحميل الصور ومقاطع الفيديو المدعومة.",
+    "The uploaded file exceeds the size limit.": "حجم الملف أكبر من الحد المسموح به.",
+    "A post must include text or at least one media item.": "يجب إدراج نص أو عنصر وسائط واحد على الأقل.",
+    "Select one or more supported platforms.": "اختر منصة واحدة أو أكثر من المنصات المدعومة.",
+    "Connect these accounts first: ": "يرجى ربط هذه الحسابات أولاً: ",
+    "Please sign in.": "يرجى تسجيل الدخول أولاً.",
+    "Invalid or expired session.": "الجلسة منتهية أو غير صالحة.",
+    "Request failed.": "فشل الطلب.",
+  };
+  return map[source] || source;
+}
 
 async function api(path, options = {}) {
   const response = await fetch(path, { credentials: "same-origin", ...options });
   const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(data.detail || data.message || "Request failed.");
+  if (!response.ok) throw new Error(translateErrorMessage(data.detail || data.message || "Request failed."));
   return data;
 }
 
 const authForm = document.querySelector("#auth-form");
 if (authForm) {
+  const passwordToggle = document.querySelector(".password-toggle");
+  if (passwordToggle) {
+    passwordToggle.addEventListener("click", () => {
+      const input = document.getElementById(passwordToggle.dataset.toggleTarget || "password-input");
+      if (!input) return;
+      const visible = input.type === "text";
+      input.type = visible ? "password" : "text";
+      passwordToggle.textContent = visible ? "إظهار" : "إخفاء";
+      passwordToggle.setAttribute("aria-label", visible ? "إظهار كلمة المرور" : "إخفاء كلمة المرور");
+    });
+  }
+
   let endpoint = "/auth/login";
   authForm.querySelectorAll("button[data-endpoint]").forEach((button) => {
     button.addEventListener("click", () => { endpoint = button.dataset.endpoint; });
@@ -28,7 +75,7 @@ if (authForm) {
         body: JSON.stringify({ email: form.get("email"), password: form.get("password") }),
       });
       if (target === "/auth/signup" && !result.authenticated) {
-        message.textContent = result.message;
+        message.textContent = result.message || "تم إنشاء الحساب بنجاح.";
       } else {
         location.assign("/dashboard");
       }
@@ -52,23 +99,23 @@ if (accountsContainer) {
       const nameWrapper = document.createElement("div");
       nameWrapper.className = "social-name";
       const label = document.createElement("span");
-      label.textContent = platform;
+      label.textContent = platformLabels[platform] || platform;
       nameWrapper.append(label);
 
       const pill = document.createElement("span");
       pill.className = "social-pill";
       if (account) {
-        pill.textContent = "Connected";
+        pill.textContent = "متصل";
         const detail = document.createElement("div");
         detail.className = "text-sm text-slate-300";
-        detail.textContent = account.account_name || "Ready";
+        detail.textContent = account.account_name || "جاهز";
         nameWrapper.append(detail);
       } else {
-        pill.textContent = "Connect";
+        pill.textContent = "ربط";
         const link = document.createElement("a");
         link.className = "social-link";
         link.href = `/oauth/${platform}/connect`;
-        link.textContent = "Link account";
+        link.textContent = "ربط الحساب";
         card.append(link);
       }
 
@@ -77,6 +124,8 @@ if (accountsContainer) {
     });
     document.querySelectorAll('input[name="platforms"]').forEach((input) => {
       input.disabled = !connected.has(input.value);
+      const text = input.parentElement?.querySelector("span");
+      if (text) text.textContent = platformLabels[input.value] || input.value;
     });
     const accountCount = document.querySelector("#account-count");
     if (accountCount) accountCount.textContent = String(accounts.length);
@@ -100,7 +149,7 @@ async function loadPosts() {
     if (publishedNode) publishedNode.textContent = String(publishedCount);
 
     if (!posts.length) {
-      container.textContent = "No posts yet.";
+      container.textContent = "لا توجد منشورات حتى الآن.";
       return;
     }
     posts.forEach((post) => {
@@ -112,20 +161,20 @@ async function loadPosts() {
 
       const status = document.createElement("span");
       status.className = "post-status";
-      status.textContent = post.status;
+      status.textContent = statusLabels[post.status] || post.status;
 
       const date = document.createElement("time");
       date.className = "post-time";
-      date.textContent = new Date(post.scheduled_at || post.created_at).toLocaleString();
+      date.textContent = new Date(post.scheduled_at || post.created_at).toLocaleString("ar-SA");
       heading.append(status, date);
 
       const caption = document.createElement("p");
       caption.className = "post-text";
-      caption.textContent = post.content || "Media post";
+      caption.textContent = post.content || "منشور وسائط";
 
       const platforms = document.createElement("p");
       platforms.className = "post-platforms";
-      platforms.textContent = (post.platforms || []).join(", ");
+      platforms.textContent = (post.platforms || []).map((item) => platformLabels[item] || item).join(", ");
 
       card.append(heading, caption, platforms);
       if (post.error_message) {
@@ -146,14 +195,14 @@ if (postForm) {
   postForm.elements.media.addEventListener("change", async (event) => {
     uploadedMedia = [];
     const status = document.querySelector("#media-status");
-    status.textContent = "Uploading media…";
+    status.textContent = "جارٍ رفع الوسائط…";
     try {
       for (const file of event.target.files) {
         const data = new FormData();
         data.append("file", file);
         uploadedMedia.push(await api("/api/media", { method: "POST", body: data }));
       }
-      status.textContent = `${uploadedMedia.length} media file(s) uploaded.`;
+      status.textContent = `${uploadedMedia.length} ملف(ات) تم رفعه بنجاح.`;
     } catch (error) {
       uploadedMedia = [];
       status.textContent = error.message;
@@ -168,7 +217,7 @@ if (postForm) {
     const platforms = data.getAll("platforms");
     const scheduledInput = data.get("scheduled_at");
     if (!platforms.length) {
-      message.textContent = "Connect and select at least one social account.";
+      message.textContent = "يرجى اختيار حساب واحد على الأقل.";
       return;
     }
     try {
@@ -184,7 +233,7 @@ if (postForm) {
         }),
       });
       message.classList.add("text-emerald-300");
-      message.textContent = `Post queued (${result.status}). Publishing API calls are mocked.`;
+      message.textContent = `تمت إضافة المنشور (${statusLabels[result.status] || result.status}).`;
       postForm.reset();
       uploadedMedia = [];
       document.querySelector("#media-status").textContent = "";

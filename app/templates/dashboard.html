@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ app_name }} · Dashboard</title>
+  <title>{{ app_name }} · لوحة التحكم</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/static/app.css">
 </head>
@@ -20,7 +20,7 @@
 
       <div class="user-meta">
         <span>{{ user.email }}</span>
-        <button id="logout" class="button-ghost">Sign out</button>
+        <button id="logout" class="button-ghost">تسجيل الخروج</button>
       </div>
     </div>
   </header>
@@ -28,15 +28,15 @@
   <main class="app-shell dashboard-shell">
     <section class="overview-grid">
       <article class="panel stat-card">
-        <span class="stat-label">Accounts</span>
+        <span class="stat-label">الحسابات</span>
         <strong id="account-count">0</strong>
       </article>
       <article class="panel stat-card">
-        <span class="stat-label">Queued</span>
+        <span class="stat-label">قيد الانتظار</span>
         <strong id="queued-count">0</strong>
       </article>
       <article class="panel stat-card">
-        <span class="stat-label">Published</span>
+        <span class="stat-label">تم النشر</span>
         <strong id="published-count">0</strong>
       </article>
     </section>
@@ -45,26 +45,26 @@
       <div class="panel composer-panel">
         <div class="panel-header">
           <div>
-            <p class="eyebrow">Content</p>
-            <h2>Create a post</h2>
+            <p class="eyebrow">المحتوى</p>
+            <h2>إنشاء منشور</h2>
           </div>
         </div>
 
         <form id="post-form" class="composer-form">
           <label class="input-group">
-            <span>Caption</span>
-            <textarea class="field textarea-field" name="content" maxlength="5000" placeholder="What would you like to share?"></textarea>
+            <span>النص</span>
+            <textarea class="field textarea-field" name="content" maxlength="5000" placeholder="ماذا تريد أن تكتب؟"></textarea>
           </label>
 
           <label class="input-group">
-            <span>Media</span>
+            <span>الوسائط</span>
             <input class="field" type="file" name="media" accept="image/*,video/mp4,video/quicktime" multiple>
           </label>
 
           <div id="media-status" class="helper-text" aria-live="polite"></div>
 
           <fieldset class="platform-fieldset">
-            <legend>Publish to</legend>
+            <legend>النشر عبر</legend>
             <div class="platform-grid">
               {% for platform in ["instagram", "tiktok", "facebook", "x", "linkedin"] %}
               <label class="platform-choice">
@@ -76,30 +76,30 @@
           </fieldset>
 
           <label class="input-group">
-            <span>Schedule (optional)</span>
+            <span>التوقيت (اختياري)</span>
             <input class="field" type="datetime-local" name="scheduled_at">
           </label>
 
-          <p class="helper-banner">Publishing is currently mocked; API integrations will be added when your platform credentials are ready.</p>
+          <p class="helper-banner">النشر الحالي تجريبي فقط، وسيتم ربط واجهات API لزيادة المنصات عند تجهيز بيانات الحسابات.</p>
           <p id="post-message" class="form-status" role="status"></p>
 
-          <button class="button-primary submit-button" type="submit">Queue post</button>
+          <button class="button-primary submit-button" type="submit">إضافة منشور</button>
         </form>
       </div>
 
       <aside class="panel stream-panel">
         <div class="panel-header">
           <div>
-            <p class="eyebrow">Overview</p>
-            <h2>Connected accounts</h2>
+            <p class="eyebrow">نظرة عامة</p>
+            <h2>الحسابات المتصلة</h2>
           </div>
         </div>
         <div id="social-accounts" class="social-list"></div>
 
         <div class="panel-header recent-header">
           <div>
-            <p class="eyebrow">History</p>
-            <h2>Recent posts</h2>
+            <p class="eyebrow">السجل</p>
+            <h2>المشاركات الأخيرة</h2>
           </div>
         </div>
         <div id="posts-list" class="posts-list"></div>

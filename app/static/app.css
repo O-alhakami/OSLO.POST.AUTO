@@ -32,6 +32,41 @@ body {
 
 button, input, textarea { font: inherit; }
 
+html[dir="rtl"] .auth-panel,
+html[dir="rtl"] .topbar-inner,
+html[dir="rtl"] .brand,
+html[dir="rtl"] .user-meta,
+html[dir="rtl"] .platform-choice,
+html[dir="rtl"] .social-item,
+html[dir="rtl"] .post-top,
+html[dir="rtl"] .auth-actions {
+  direction: rtl;
+}
+
+.password-field-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-field {
+  padding-left: 86px !important;
+}
+
+.password-toggle {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(15, 23, 42, 0.56);
+  color: var(--muted);
+  border-radius: 10px;
+  padding: 0.45rem 0.7rem;
+  cursor: pointer;
+  font-size: 0.78rem;
+}
+
 .app-shell {
   width: min(1220px, calc(100% - 2rem));
   margin: 0 auto;

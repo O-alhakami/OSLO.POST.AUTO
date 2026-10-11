@@ -92,7 +92,7 @@ async def signup(credentials: Credentials):
     token = _session_access_token(result)
     response = JSONResponse(
         {
-            "message": "Account created." if token else "Check your email to confirm your account.",
+            "message": "تم إنشاء الحساب بنجاح." if token else "تحقق من بريدك الإلكتروني لتأكيد الحساب.",
             "authenticated": bool(token),
         },
         status_code=201,
@@ -109,11 +109,11 @@ async def login(credentials: Credentials):
             {"email": credentials.email, "password": credentials.password}
         )
     except AuthApiError as exc:
-        raise HTTPException(status_code=401, detail="Invalid email or password.") from exc
+        raise HTTPException(status_code=401, detail="البريد الإلكتروني أو كلمة المرور غير صحيحة.") from exc
     token = _session_access_token(result)
     if not token:
-        raise HTTPException(status_code=401, detail="Sign-in did not return a valid session.")
-    response = JSONResponse({"message": "Signed in."})
+        raise HTTPException(status_code=401, detail="لم يتم إرجاع جلسة صالحة.")
+    response = JSONResponse({"message": "تم تسجيل الدخول بنجاح."})
     _set_auth_cookie(response, token)
     return response
 

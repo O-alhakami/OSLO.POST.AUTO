@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ app_name }} · Sign in</title>
+  <title>{{ app_name }} · تسجيل الدخول</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/static/app.css">
 </head>
@@ -16,32 +16,35 @@
       <div class="brand-block">
         <div class="brand-badge">OS</div>
         <div>
-          <p class="eyebrow">Social publishing suite</p>
+          <p class="eyebrow">منصة النشر الاجتماعي</p>
           <h1>{{ app_name }}</h1>
         </div>
       </div>
 
       <div class="hero-copy">
-        <h2>One place. Every post.</h2>
-        <p>Compose once, schedule everywhere, and keep your publishing pipeline under control.</p>
+        <h2>مكان واحد. كل منشور.</h2>
+        <p>اكتب مرة واحدة، ووزّع في كل المنصات، واحتفظ بجدول النشر تحت سيطرتك.</p>
       </div>
 
       <form id="auth-form" class="auth-form">
         <label class="input-group">
-          <span>Email</span>
-          <input class="field" type="email" name="email" autocomplete="email" required>
+          <span>البريد الإلكتروني</span>
+          <input class="field" type="email" name="email" autocomplete="email" placeholder="example@email.com" required>
         </label>
 
         <label class="input-group">
-          <span>Password</span>
-          <input class="field" type="password" name="password" autocomplete="current-password" minlength="8" required>
+          <span>كلمة المرور</span>
+          <div class="password-field-wrap">
+            <input id="password-input" class="field password-field" type="password" name="password" autocomplete="current-password" minlength="8" placeholder="أدخل كلمة المرور" required>
+            <button type="button" class="password-toggle" aria-label="إظهار كلمة المرور" data-toggle-target="password-input">إظهار</button>
+          </div>
         </label>
 
         <p id="auth-message" class="form-status" role="status"></p>
 
         <div class="auth-actions">
-          <button class="button-primary" type="submit" data-endpoint="/auth/login">Sign in</button>
-          <button class="button-secondary" type="submit" data-endpoint="/auth/signup">Create account</button>
+          <button class="button-primary" type="submit" data-endpoint="/auth/login">تسجيل الدخول</button>
+          <button class="button-secondary" type="submit" data-endpoint="/auth/signup">إنشاء حساب</button>
         </div>
       </form>
     </section>
