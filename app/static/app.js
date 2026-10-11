@@ -77,7 +77,7 @@ if (authForm) {
       if (target === "/auth/signup" && !result.authenticated) {
         message.textContent = result.message || "تم إنشاء الحساب بنجاح.";
       } else {
-        location.assign("/dashboard");
+        location.assign(result.redirect_url || "/dashboard");
       }
     } catch (error) {
       message.textContent = error.message;

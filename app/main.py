@@ -49,6 +49,12 @@ def _session_access_token(auth_response: Any) -> str | None:
     return getattr(session, "access_token", None) if session else None
 
 
+def _post_login_redirect(auth_response: Any) -> str:
+    user = getattr(auth_response, "user", None)
+    app_metadata = getattr(user, "app_metadata", None) or {}
+    return "/admin" if app_metadata.get("role") == "admin" else "/dashboard"
+
+
 def _set_auth_cookie(response: JSONResponse, token: str) -> None:
     response.set_cookie(
         "access_token",
@@ -118,7 +124,9 @@ async def login(credentials: Credentials):
     token = _session_access_token(result)
     if not token:
         raise HTTPException(status_code=401, detail="لم يتم إرجاع جلسة صالحة.")
-    response = JSONResponse({"message": "تم تسجيل الدخول بنجاح."})
+    response = JSONResponse(
+        {"message": "تم تسجيل الدخول بنجاح.", "redirect_url": _post_login_redirect(result)}
+    )
     _set_auth_cookie(response, token)
     return response
 
