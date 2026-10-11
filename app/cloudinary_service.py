@@ -11,14 +11,23 @@ import cloudinary.uploader
 from app.config import get_settings
 
 
-def configure_cloudinary() -> None:
+def _safe_cloudinary_config() -> None:
     settings = get_settings()
+    cloud_name = settings.cloudinary_cloud_name.strip()
+    api_key = settings.cloudinary_api_key.strip()
+    api_secret = settings.cloudinary_api_secret.strip()
+    if not cloud_name or not api_key or not api_secret:
+        return
     cloudinary.config(
-        cloud_name=settings.cloudinary_cloud_name,
-        api_key=settings.cloudinary_api_key,
-        api_secret=settings.cloudinary_api_secret,
+        cloud_name=cloud_name,
+        api_key=api_key,
+        api_secret=api_secret,
         secure=True,
     )
+
+
+def configure_cloudinary() -> None:
+    _safe_cloudinary_config()
 
 
 def upload_media(file: BinaryIO, filename: str, user_id: str) -> dict[str, Any]:

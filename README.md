@@ -44,6 +44,29 @@ celery -A app.tasks.celery_app beat --loglevel=info
 
 Redis must be reachable at `REDIS_URL`. Configure your Supabase, Cloudinary, and OAuth credentials before using the relevant features. Set `SECURE_COOKIES=true` behind HTTPS in production. `/ping` returns `{"status":"ok"}`.
 
+## Render deployment notes
+
+This project is ready for Render with a `render.yaml` file and a production-safe Gunicorn start command. The app exposes `/ping` for health checks.
+
+Required environment variables in Render:
+
+```env
+APP_SECRET_KEY=...
+TOKEN_ENCRYPTION_KEY=...
+PUBLIC_BASE_URL=https://your-render-app.onrender.com
+SECURE_COOKIES=true
+REDIS_URL=redis://:password@host:port/0
+SUPABASE_URL=https://xyz.supabase.co
+SUPABASE_ANON_KEY=...
+SUPABASE_SERVICE_ROLE_KEY=...
+CLOUDINARY_CLOUD_NAME=...
+CLOUDINARY_API_KEY=...
+CLOUDINARY_API_SECRET=...
+MAX_UPLOAD_BYTES=104857600
+```
+
+If you prefer a single Cloudinary URL instead of individual variables, the app accepts `CLOUDINARY_URL` in `cloudinary://api_key:api_secret@cloud_name` format. Invalid values are ignored safely so the app can still start.
+
 ## GitHub
 
 After reviewing the project and adding valid GitHub credentials/permissions, initialize and push with the requested remote:

@@ -227,7 +227,7 @@ async def oauth_callback(platform: str, request: Request, code: str | None = Non
 
 @app.post("/api/media")
 async def media_upload(file: UploadFile = File(...), user: dict[str, Any] = Depends(get_current_user)):
-    del user
+    user_id = user["id"]
     if file.content_type not in ALLOWED_MEDIA_TYPES:
         raise HTTPException(status_code=415, detail="Only supported image and video formats can be uploaded.")
     content = await file.read(settings.max_upload_bytes + 1)
@@ -236,7 +236,7 @@ async def media_upload(file: UploadFile = File(...), user: dict[str, Any] = Depe
     try:
         import io
 
-        uploaded = upload_media(io.BytesIO(content), file.filename or "upload", user["id"])
+        uploaded = upload_media(io.BytesIO(content), file.filename or "upload", user_id)
     except (Exception, OSError, RuntimeError) as exc:
         raise HTTPException(status_code=502, detail=f"Cloudinary upload failed: {exc}") from exc
     return {
