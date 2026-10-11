@@ -1,4 +1,9 @@
+import os
 from typing import Any, BinaryIO
+
+cloudinary_url = os.environ.get("CLOUDINARY_URL")
+if cloudinary_url and not cloudinary_url.startswith("cloudinary://"):
+    os.environ.pop("CLOUDINARY_URL", None)
 
 import cloudinary
 import cloudinary.uploader

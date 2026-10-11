@@ -47,28 +47,39 @@ if (accountsContainer) {
     platformNames.forEach((platform) => {
       const account = accounts.find((item) => item.platform === platform);
       const card = document.createElement("div");
-      card.className = "rounded-xl border border-slate-800 bg-slate-900 p-4";
-      const title = document.createElement("div");
-      title.className = "font-semibold capitalize";
-      title.textContent = platform;
-      card.append(title);
+      card.className = "social-item";
+
+      const nameWrapper = document.createElement("div");
+      nameWrapper.className = "social-name";
+      const label = document.createElement("span");
+      label.textContent = platform;
+      nameWrapper.append(label);
+
+      const pill = document.createElement("span");
+      pill.className = "social-pill";
       if (account) {
-        const detail = document.createElement("p");
-        detail.className = "mt-1 truncate text-sm text-emerald-300";
-        detail.textContent = account.account_name || "Connected";
-        card.append(detail);
+        pill.textContent = "Connected";
+        const detail = document.createElement("div");
+        detail.className = "text-sm text-slate-300";
+        detail.textContent = account.account_name || "Ready";
+        nameWrapper.append(detail);
       } else {
+        pill.textContent = "Connect";
         const link = document.createElement("a");
-        link.className = "mt-2 inline-block text-sm text-cyan-300 hover:text-white";
+        link.className = "social-link";
         link.href = `/oauth/${platform}/connect`;
-        link.textContent = "Connect account";
+        link.textContent = "Link account";
         card.append(link);
       }
+
+      card.append(nameWrapper, pill);
       accountsContainer.append(card);
     });
     document.querySelectorAll('input[name="platforms"]').forEach((input) => {
       input.disabled = !connected.has(input.value);
     });
+    const accountCount = document.querySelector("#account-count");
+    if (accountCount) accountCount.textContent = String(accounts.length);
   }
   loadAccounts().catch((error) => { accountsContainer.textContent = error.message; });
   loadPosts();
@@ -80,32 +91,46 @@ async function loadPosts() {
   try {
     const posts = await api("/api/posts");
     container.replaceChildren();
+
+    const queuedCount = posts.filter((post) => post.status === "queued" || post.status === "scheduled").length;
+    const publishedCount = posts.filter((post) => post.status === "published").length;
+    const queuedNode = document.querySelector("#queued-count");
+    const publishedNode = document.querySelector("#published-count");
+    if (queuedNode) queuedNode.textContent = String(queuedCount);
+    if (publishedNode) publishedNode.textContent = String(publishedCount);
+
     if (!posts.length) {
       container.textContent = "No posts yet.";
       return;
     }
     posts.forEach((post) => {
       const card = document.createElement("article");
-      card.className = "rounded-xl border border-slate-800 bg-slate-900 p-4";
+      card.className = "post-item";
+
       const heading = document.createElement("div");
-      heading.className = "flex justify-between gap-3";
+      heading.className = "post-top";
+
       const status = document.createElement("span");
-      status.className = "text-sm font-semibold capitalize text-cyan-300";
+      status.className = "post-status";
       status.textContent = post.status;
+
       const date = document.createElement("time");
-      date.className = "text-xs text-slate-500";
+      date.className = "post-time";
       date.textContent = new Date(post.scheduled_at || post.created_at).toLocaleString();
       heading.append(status, date);
+
       const caption = document.createElement("p");
-      caption.className = "mt-3 whitespace-pre-wrap text-sm text-slate-300";
+      caption.className = "post-text";
       caption.textContent = post.content || "Media post";
+
       const platforms = document.createElement("p");
-      platforms.className = "mt-2 text-xs capitalize text-slate-500";
+      platforms.className = "post-platforms";
       platforms.textContent = (post.platforms || []).join(", ");
+
       card.append(heading, caption, platforms);
       if (post.error_message) {
         const error = document.createElement("p");
-        error.className = "mt-2 text-xs text-rose-300";
+        error.className = "post-error";
         error.textContent = post.error_message;
         card.append(error);
       }

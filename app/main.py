@@ -5,7 +5,6 @@ from typing import Any
 from urllib.parse import quote, urlparse
 
 import httpx
-from cloudinary.exceptions import Error as CloudinaryError
 from fastapi import Depends, FastAPI, File, HTTPException, Request, UploadFile, status
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -238,7 +237,7 @@ async def media_upload(file: UploadFile = File(...), user: dict[str, Any] = Depe
         import io
 
         uploaded = upload_media(io.BytesIO(content), file.filename or "upload", user["id"])
-    except (CloudinaryError, OSError, RuntimeError) as exc:
+    except (Exception, OSError, RuntimeError) as exc:
         raise HTTPException(status_code=502, detail=f"Cloudinary upload failed: {exc}") from exc
     return {
         "url": uploaded["secure_url"],

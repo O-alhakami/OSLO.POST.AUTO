@@ -7,43 +7,106 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/static/app.css">
 </head>
-<body class="min-h-screen bg-slate-950 text-slate-100">
-  <header class="border-b border-slate-800 bg-slate-900/80">
-    <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
-      <a class="text-lg font-bold" href="/dashboard">{{ app_name }}</a>
-      <div class="flex items-center gap-4 text-sm"><span class="text-slate-400">{{ user.email }}</span><button id="logout" class="text-cyan-300 hover:text-white">Sign out</button></div>
+<body class="dashboard-page">
+  <div class="orb orb-one"></div>
+  <div class="orb orb-two"></div>
+
+  <header class="topbar panel">
+    <div class="topbar-inner app-shell">
+      <a class="brand" href="/dashboard">
+        <span class="brand-badge">OS</span>
+        <span>{{ app_name }}</span>
+      </a>
+
+      <div class="user-meta">
+        <span>{{ user.email }}</span>
+        <button id="logout" class="button-ghost">Sign out</button>
+      </div>
     </div>
   </header>
-  <main class="mx-auto max-w-6xl space-y-8 px-5 py-8">
-    <section>
-      <h1 class="text-3xl font-bold">Social accounts</h1>
-      <p class="mt-2 text-slate-400">Connect accounts before selecting them for a post.</p>
-      <div id="social-accounts" class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5"></div>
+
+  <main class="app-shell dashboard-shell">
+    <section class="overview-grid">
+      <article class="panel stat-card">
+        <span class="stat-label">Accounts</span>
+        <strong id="account-count">0</strong>
+      </article>
+      <article class="panel stat-card">
+        <span class="stat-label">Queued</span>
+        <strong id="queued-count">0</strong>
+      </article>
+      <article class="panel stat-card">
+        <span class="stat-label">Published</span>
+        <strong id="published-count">0</strong>
+      </article>
     </section>
-    <section class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(300px,.8fr)]">
-      <div class="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-        <h2 class="text-xl font-semibold">Create a post</h2>
-        <form id="post-form" class="mt-5 space-y-5">
-          <label class="block text-sm">Caption<textarea class="field mt-1 min-h-32" name="content" maxlength="5000" placeholder="What would you like to share?"></textarea></label>
-          <label class="block text-sm">Image or video<input class="field mt-1" type="file" name="media" accept="image/*,video/mp4,video/quicktime" multiple></label>
-          <div id="media-status" class="text-sm text-slate-400" aria-live="polite"></div>
-          <fieldset><legend class="mb-2 text-sm">Publish to</legend><div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
-            {% for platform in ["instagram", "tiktok", "facebook", "x", "linkedin"] %}
-            <label class="platform-choice"><input type="checkbox" name="platforms" value="{{ platform }}"><span>{{ platform|capitalize }}</span></label>
-            {% endfor %}
-          </div></fieldset>
-          <label class="block text-sm">Schedule (optional)<input class="field mt-1" type="datetime-local" name="scheduled_at"></label>
-          <p class="text-xs text-amber-300">Publishing is currently mocked: no content is sent to social networks until their publishing APIs are implemented.</p>
-          <p id="post-message" class="min-h-5 text-sm" role="status"></p>
-          <button class="button-primary w-full" type="submit">Queue post</button>
+
+    <section class="content-grid">
+      <div class="panel composer-panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Content</p>
+            <h2>Create a post</h2>
+          </div>
+        </div>
+
+        <form id="post-form" class="composer-form">
+          <label class="input-group">
+            <span>Caption</span>
+            <textarea class="field textarea-field" name="content" maxlength="5000" placeholder="What would you like to share?"></textarea>
+          </label>
+
+          <label class="input-group">
+            <span>Media</span>
+            <input class="field" type="file" name="media" accept="image/*,video/mp4,video/quicktime" multiple>
+          </label>
+
+          <div id="media-status" class="helper-text" aria-live="polite"></div>
+
+          <fieldset class="platform-fieldset">
+            <legend>Publish to</legend>
+            <div class="platform-grid">
+              {% for platform in ["instagram", "tiktok", "facebook", "x", "linkedin"] %}
+              <label class="platform-choice">
+                <input type="checkbox" name="platforms" value="{{ platform }}">
+                <span>{{ platform|capitalize }}</span>
+              </label>
+              {% endfor %}
+            </div>
+          </fieldset>
+
+          <label class="input-group">
+            <span>Schedule (optional)</span>
+            <input class="field" type="datetime-local" name="scheduled_at">
+          </label>
+
+          <p class="helper-banner">Publishing is currently mocked; API integrations will be added when your platform credentials are ready.</p>
+          <p id="post-message" class="form-status" role="status"></p>
+
+          <button class="button-primary submit-button" type="submit">Queue post</button>
         </form>
       </div>
-      <section>
-        <h2 class="text-xl font-semibold">Recent posts</h2>
-        <div id="posts-list" class="mt-5 space-y-3"></div>
-      </section>
+
+      <aside class="panel stream-panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Overview</p>
+            <h2>Connected accounts</h2>
+          </div>
+        </div>
+        <div id="social-accounts" class="social-list"></div>
+
+        <div class="panel-header recent-header">
+          <div>
+            <p class="eyebrow">History</p>
+            <h2>Recent posts</h2>
+          </div>
+        </div>
+        <div id="posts-list" class="posts-list"></div>
+      </aside>
     </section>
   </main>
+
   <script src="/static/app.js" defer></script>
 </body>
 </html>
