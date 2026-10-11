@@ -1,0 +1,7 @@
+.field{display:block;width:100%;border:1px solid #334155;border-radius:.65rem;background:#020617;padding:.7rem .8rem;color:#f8fafc;outline:none}
+.field:focus{border-color:#22d3ee;box-shadow:0 0 0 2px rgb(34 211 238 / 15%)}
+.button-primary,.button-secondary{border-radius:.65rem;padding:.7rem 1rem;font-weight:600;transition:background .15s}
+.button-primary{background:#0891b2;color:white}.button-primary:hover{background:#0e7490}
+.button-secondary{border:1px solid #475569;color:#e2e8f0}.button-secondary:hover{background:#1e293b}
+.platform-choice{display:flex;align-items:center;gap:.55rem;border:1px solid #334155;border-radius:.6rem;padding:.65rem .75rem;text-transform:capitalize;color:#cbd5e1}
+.platform-choice:has(input:checked){border-color:#06b6d4;background:#083344;color:white}

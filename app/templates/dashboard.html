@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ app_name }} · Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100">
+  <header class="border-b border-slate-800 bg-slate-900/80">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
+      <a class="text-lg font-bold" href="/dashboard">{{ app_name }}</a>
+      <div class="flex items-center gap-4 text-sm"><span class="text-slate-400">{{ user.email }}</span><button id="logout" class="text-cyan-300 hover:text-white">Sign out</button></div>
+    </div>
+  </header>
+  <main class="mx-auto max-w-6xl space-y-8 px-5 py-8">
+    <section>
+      <h1 class="text-3xl font-bold">Social accounts</h1>
+      <p class="mt-2 text-slate-400">Connect accounts before selecting them for a post.</p>
+      <div id="social-accounts" class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5"></div>
+    </section>
+    <section class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(300px,.8fr)]">
+      <div class="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+        <h2 class="text-xl font-semibold">Create a post</h2>
+        <form id="post-form" class="mt-5 space-y-5">
+          <label class="block text-sm">Caption<textarea class="field mt-1 min-h-32" name="content" maxlength="5000" placeholder="What would you like to share?"></textarea></label>
+          <label class="block text-sm">Image or video<input class="field mt-1" type="file" name="media" accept="image/*,video/mp4,video/quicktime" multiple></label>
+          <div id="media-status" class="text-sm text-slate-400" aria-live="polite"></div>
+          <fieldset><legend class="mb-2 text-sm">Publish to</legend><div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            {% for platform in ["instagram", "tiktok", "facebook", "x", "linkedin"] %}
+            <label class="platform-choice"><input type="checkbox" name="platforms" value="{{ platform }}"><span>{{ platform|capitalize }}</span></label>
+            {% endfor %}
+          </div></fieldset>
+          <label class="block text-sm">Schedule (optional)<input class="field mt-1" type="datetime-local" name="scheduled_at"></label>
+          <p class="text-xs text-amber-300">Publishing is currently mocked: no content is sent to social networks until their publishing APIs are implemented.</p>
+          <p id="post-message" class="min-h-5 text-sm" role="status"></p>
+          <button class="button-primary w-full" type="submit">Queue post</button>
+        </form>
+      </div>
+      <section>
+        <h2 class="text-xl font-semibold">Recent posts</h2>
+        <div id="posts-list" class="mt-5 space-y-3"></div>
+      </section>
+    </section>
+  </main>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ app_name }} · Sign in</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-6">
+  <main class="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-8 shadow-2xl">
+    <p class="text-sm font-semibold uppercase tracking-[.2em] text-cyan-400">{{ app_name }}</p>
+    <h1 class="mt-3 text-3xl font-bold">One place. Every post.</h1>
+    <p class="mt-2 text-slate-400">Sign in or create an account to manage your social publishing.</p>
+    <form id="auth-form" class="mt-8 space-y-4">
+      <label class="block text-sm">Email<input class="field mt-1" type="email" name="email" autocomplete="email" required></label>
+      <label class="block text-sm">Password<input class="field mt-1" type="password" name="password" autocomplete="current-password" minlength="8" required></label>
+      <p id="auth-message" class="min-h-5 text-sm text-rose-300" role="status"></p>
+      <div class="grid grid-cols-2 gap-3">
+        <button class="button-primary" type="submit" data-endpoint="/auth/login">Sign in</button>
+        <button class="button-secondary" type="submit" data-endpoint="/auth/signup">Create account</button>
+      </div>
+    </form>
+  </main>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>
