@@ -3,6 +3,7 @@ services:
     name: oslo-post-auto
     env: python
     plan: free
+    autoDeploy: true
     buildCommand: pip install --upgrade pip && pip install -r requirements.txt
     startCommand: gunicorn app.main:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT
     healthCheckPath: /ping
@@ -20,7 +21,7 @@ services:
       - key: REDIS_URL
         sync: false
       - key: SUPABASE_URL
-        sync: false
+        value: https://wkjmqjpwuiquxgfdhnnu.supabase.co
       - key: SUPABASE_ANON_KEY
         sync: false
       - key: SUPABASE_SERVICE_ROLE_KEY

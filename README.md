@@ -46,7 +46,9 @@ Redis must be reachable at `REDIS_URL`. Configure your Supabase, Cloudinary, and
 
 ## Render deployment notes
 
-This project is ready for Render with a `render.yaml` file and a production-safe Gunicorn start command. The app exposes `/ping` for health checks.
+This project includes a Render Blueprint with a production-safe Gunicorn start command, `/ping` health check, and automatic deployment enabled for commits to the connected branch. The Supabase project URL is prefilled; credentials remain secrets and must be set in Render.
+
+For Blueprint settings to take effect on an existing Render service, connect the GitHub repository and sync/apply the Blueprint. Confirm that the service tracks `main` and Auto-Deploy is enabled in the Render dashboard. The Blueprint cannot change settings on a manually created service until it is linked and synced.
 
 Required environment variables in Render:
 
@@ -66,6 +68,8 @@ MAX_UPLOAD_BYTES=104857600
 ```
 
 If you prefer a single Cloudinary URL instead of individual variables, the app accepts `CLOUDINARY_URL` in `cloudinary://api_key:api_secret@cloud_name` format. Invalid values are ignored safely so the app can still start.
+
+The web service alone does not run Celery tasks. Scheduled publishing and daily cleanup require a reachable Redis instance, a Celery worker running `celery -A app.tasks.celery_app worker --loglevel=info`, and Celery Beat running `celery -A app.tasks.celery_app beat --loglevel=info`. Configure these as separate Render background services (and Redis/Key Value); background services may incur charges. Without the worker and Redis, the dashboard and `/ping` can run, but queued and scheduled posts will not be processed.
 
 ## GitHub
 
